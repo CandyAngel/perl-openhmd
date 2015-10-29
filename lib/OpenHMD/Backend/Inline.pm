@@ -13,6 +13,8 @@ use Inline (
     libs    => '-lopenhmd',
 );
 
+our $VERSION = '0.001';
+
 const our $OHMD_VENDOR  => 0;
 const our $OHMD_PRODUCT => 1;
 const our $OHMD_PATH    => 2;
