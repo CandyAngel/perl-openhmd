@@ -17,6 +17,8 @@ subtest 'functions' => sub {
         ohmd_ctx_destroy
         ohmd_ctx_get_error
         ohmd_ctx_probe
+        ohmd_device_getf
+        ohmd_device_geti
         ohmd_list_gets
         ohmd_list_open_device
     );
@@ -70,6 +72,20 @@ subtest 'ohmd_list_open_device' => sub {
 
     $DEVICE = ohmd_list_open_device($CONTEXT, 0);
     cmp_ok $DEVICE, '>', 0, 'Valid device handle';
+};
+
+subtest 'ohmd_device_getf' => sub {
+    throws_ok { ohmd_device_getf() } qr/^Too few arguments/,
+        'Too few arguments';
+    throws_ok { ohmd_device_getf(1, 1, 1, 1) } qr/^Too many arguments/,
+        'Too many arguments';
+};
+
+subtest 'ohmd_device_geti' => sub {
+    throws_ok { ohmd_device_geti() } qr/^Too few arguments/,
+        'Too few arguments';
+    throws_ok { ohmd_device_geti(1, 1, 1, 1) } qr/^Too many arguments/,
+        'Too many arguments';
 };
 
 subtest 'ohmd_close_device' => sub {

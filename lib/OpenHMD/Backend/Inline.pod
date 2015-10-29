@@ -34,6 +34,45 @@ This synopsis is available as eg/openhmd-backend-inline.pl
     die sprintf 'Failed to open device: %s', ohmd_ctx_get_error($context)
         if !$device;
 
+    my $geti = sub {
+        my $type = shift;
+        my $buffer = pack 'i';
+        my $status = ohmd_device_geti($device, $type, $buffer);
+        die 'Failed to get integer: %s', ohmd_ctx_get_error($context)
+            if $status != $OHMD_S_OK;
+        return unpack 'i', $buffer;
+    };
+
+    my @resolution = (
+        $geti->($OHMD_SCREEN_HORIZONTAL_RESOLUTION),
+        $geti->($OHMD_SCREEN_VERTICAL_RESOLUTION),
+    );
+    printf "%-20s:   %i x %i\n", 'Resolution', @resolution;
+
+    my $print_getf = sub {
+        my ($title, $size, $type) = @_;
+        my $buffer = pack sprintf 'f%i', $size;
+        my $status = ohmd_device_getf($device, $type, $buffer);
+        die 'Failed to get float: %s', ohmd_ctx_get_error($context)
+            if $status != $OHMD_S_OK;
+
+        printf "%-20s:   %s\n", (
+            $title,
+            join ' ', map { sprintf '% 6f', $_ } unpack 'f*', $buffer,
+        );
+    };
+
+    $print_getf->('Horizontal Size',  1, $OHMD_SCREEN_HORIZONTAL_SIZE);
+    $print_getf->('Vertical Size',    1, $OHMD_SCREEN_VERTICAL_SIZE);
+    $print_getf->('Lens Separation',  1, $OHMD_LENS_HORIZONTAL_SEPARATION);
+    $print_getf->('Lens Position',    1, $OHMD_LENS_VERTICAL_POSITION);
+    $print_getf->('Left Eye FoV',     1, $OHMD_LEFT_EYE_FOV);
+    $print_getf->('Right Eye FoV',    1, $OHMD_RIGHT_EYE_FOV);
+    $print_getf->('Left Eye Aspect',  1, $OHMD_LEFT_EYE_ASPECT_RATIO);
+    $print_getf->('Right Eye Aspect', 1, $OHMD_RIGHT_EYE_ASPECT_RATIO);
+    $print_getf->('Distortion K',     6, $OHMD_DISTORTION_K);
+    print "\n";
+
     my $status = ohmd_close_device($device);
     die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
         if $status != $OHMD_S_OK;
@@ -80,6 +119,32 @@ Gets the latest human readable error message.
 
 Probes for supported devices and returns the count of found devices.
 
+=head2 ohmd_device_getf
+
+    my $status = ohmd_device_getf($device, $type, $out);
+
+Populate $out with the float values for $type as a packed string.
+
+    # Get the rotation quaternion
+    my $out = pack 'f4';
+    my $status = ohmd_device_getf($device, $OHMD_ROTATION_QUAT, $out);
+    my @quaternion = unpack 'f*', $out;
+
+=head2 ohmd_device_geti
+
+    my $status = ohmd_device_geti($device, $type, $out);
+
+Populate $out with the integer values for $type as a packed string.
+
+    # Get the horizontal resolution
+    my $out = pack 'i1';
+    my $status = ohmd_device_geti(
+        $device,
+        $OHMD_SCREEN_HORIZONTAL_RESOLUTION,
+        $out,
+    );
+    my $horizontal = unpack 'i*', $out;
+
 =head2 ohmd_list_gets
 
     my $string = ohmd_list_gets($context, $index, $type);
@@ -102,6 +167,32 @@ Opens the device at $index.
 
 OpenHMD::Backend::Inline provides the following constants, which can be
 imported individually or using the C<:constants> tag.
+
+=head2 Float
+
+    $OHMD_DISTORTION_K
+    $OHMD_EYE_IPD
+    $OHMD_LEFT_EYE_ASPECT_RATIO
+    $OHMD_LEFT_EYE_FOV
+    $OHMD_LEFT_EYE_GL_MODELVIEW_MATRIX
+    $OHMD_LEFT_EYE_GL_PROJECTION_MATRIX
+    $OHMD_LENS_HORIZONTAL_SEPARATION
+    $OHMD_LENS_VERTICAL_POSITION
+    $OHMD_POSITION_VECTOR
+    $OHMD_PROJECTION_ZFAR
+    $OHMD_PROJECTION_ZNEAR
+    $OHMD_RIGHT_EYE_ASPECT_RATIO
+    $OHMD_RIGHT_EYE_FOV
+    $OHMD_RIGHT_EYE_GL_MODELVIEW_MATRIX
+    $OHMD_RIGHT_EYE_GL_PROJECTION_MATRIX
+    $OHMD_ROTATION_QUAT
+    $OHMD_SCREEN_HORIZONTAL_SIZE
+    $OHMD_SCREEN_VERTICAL_SIZE
+
+=head2 Integer
+
+    $OHMD_SCREEN_HORIZONTAL_RESOLUTION
+    $OHMD_SCREEN_VERTICAL_RESOLUTION
 
 =head2 Status
 
