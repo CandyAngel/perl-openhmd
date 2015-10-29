@@ -29,6 +29,10 @@ Thin binding module for OpenHMD utilising Inline::C
 
 =over 4
 
+=item Electric Jungle
+
+Maintaining the CPAN release.
+
 =item Fredrick Hultin and Joey Ferwerda
 
 For their help with the C aspect of this module, answering questions,
