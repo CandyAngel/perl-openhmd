@@ -10,6 +10,26 @@ This synopsis is available as eg/openhmd-backend-inline.pl
 
     my $context = ohmd_ctx_create() or die 'Failed to create context';
 
+    my $count = ohmd_ctx_probe($context);
+    die sprintf 'Failed to probe devices: %s', ohmd_ctx_get_error($context)
+        if $count < 0;
+    printf "Devices: %i\n\n", $count;
+
+    my $print_gets = sub {
+        my ($title, $index, $type) = @_;
+        my $value = ohmd_list_gets($context, $index, $type);
+
+        printf "    %-8s:   %s\n", $title, $value;
+    };
+
+    foreach my $index (0 .. $count - 1) {
+        printf "Device %i\n", $index;
+        $print_gets->('Vendor', $index, $OHMD_VENDOR);
+        $print_gets->('Product', $index, $OHMD_PRODUCT);
+        $print_gets->('Path', $index, $OHMD_PATH);
+        print "\n";
+    }
+
     ohmd_ctx_destroy($context);
 
 =head1 DESCRIPTION
@@ -34,6 +54,45 @@ Create a new OpenHMD context.
 
 Destroy an OpenHMD context.
 
+=head2 ohmd_ctx_get_error
+
+    my $error = ohmd_ctx_get_error($context);
+
+Gets the latest human readable error message.
+
+=head2 ohmd_ctx_probe
+
+    my $device_count = ohmd_ctx_probe($context);
+
+Probes for supported devices and returns the count of found devices.
+
+=head2 ohmd_list_gets
+
+    my $string = ohmd_list_gets($context, $index, $type);
+
+Gets the string value of $type for device at $index.
+
+    # Get vendor of device at index 1
+    my $vendor = ohmd_list_gets($context, 1, $OHMD_VENDOR);
+
+=head1 CONSTANTS
+
+OpenHMD::Backend::Inline provides the following constants, which can be
+imported individually or using the C<:constants> tag.
+
+=head2 Status
+
+    $OHMD_S_INVALID_PARAMETER
+    $OHMD_S_OK
+    $OHMD_S_UNKNOWN_ERROR
+    $OHMD_S_USER_RESERVED
+
+=head2 String
+
+    $OHMD_PATH
+    $OHMD_PRODUCT
+    $OHMD_VENDOR
+
 =head1 SEE ALSO
 
 =over 4
@@ -57,6 +116,10 @@ OpenHMD::Backend::Inline depends on the following modules.
 =item Carp
 
 Throwing errors from the callers perspective.
+
+=item Const::Fast
+
+Exportable, read-only constants.
 
 =item Exporter
 
