@@ -1,0 +1,84 @@
+=head1 NAME
+
+OpenHMD::Backend::Inline - Binding for the OpenHMD C library, using Inline::C
+
+=head1 SYNOPSIS
+
+This synopsis is available as eg/openhmd-backend-inline.pl
+
+    use OpenHMD::Backend::Inline qw(:all);
+
+    my $context = ohmd_ctx_create() or die 'Failed to create context';
+
+    ohmd_ctx_destroy($context);
+
+=head1 DESCRIPTION
+
+OpenHMD::Backend::Inline is a thin wrapper for the OpenHMD C library, using
+Inline::C.
+
+=head1 FUNCTIONS
+
+OpenHMD::Backend::Inline implements the following functions, which can be
+imported individually or using the C<:functions> tag.
+
+=head2 ohmd_ctx_create
+
+    my $context = ohmd_ctx_create();
+
+Create a new OpenHMD context.
+
+=head2 ohmd_ctx_destroy
+
+    ohmd_ctx_destroy($context);
+
+Destroy an OpenHMD context.
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<openhmd.net|http://openhmd.net/>
+
+OpenHMD's website.
+
+=item #openhmd @ freenode
+
+Official IRC channel for OpenHMD
+
+=back
+
+=head1 DEPENDENCIES
+
+OpenHMD::Backend::Inline depends on the following modules.
+
+=over 4
+
+=item Carp
+
+Throwing errors from the callers perspective.
+
+=item Exporter
+
+Exporting constants and functions.
+
+=item Inline::C
+
+Access to C functions from Perl.
+
+=back
+
+=head1 AUTHOR
+
+CandyAngel <candyangel@electricjungle.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2015 CandyAngel <candyangel@electricjungle.org>.
+All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. See L<perlartistic>.  This program is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
