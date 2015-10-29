@@ -275,6 +275,22 @@ Access to C functions from Perl.
 
 =back
 
+=head1 ACKNOWLEDGEMENTS
+
+=over 4
+
+=item Fredrick Hultin and Joey Ferwerda
+
+For their help with the C aspect of this module, answering questions,
+implementing suggested functionality into OpenHMD and generally being very
+encouraging and supportive.
+
+=item NefariousMoogle
+
+Reviewed documentation.
+
+=back
+
 =head1 AUTHOR
 
 CandyAngel <candyangel@electricjungle.org>
