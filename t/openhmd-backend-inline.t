@@ -8,15 +8,17 @@ use Test::More;
 
 use OpenHMD::Backend::Inline qw(:all);
 
-my ($CONTEXT, $COUNT);
+my ($CONTEXT, $COUNT, $DEVICE);
 
 subtest 'functions' => sub {
     my @functions = qw(
+        ohmd_close_device
         ohmd_ctx_create
         ohmd_ctx_destroy
         ohmd_ctx_get_error
         ohmd_ctx_probe
         ohmd_list_gets
+        ohmd_list_open_device
     );
     push @functions, map { '_inline_' . $_ } @functions;
 
@@ -58,6 +60,26 @@ subtest 'ohmd_list_gets' => sub {
         'Too few arguments';
     throws_ok { ohmd_list_gets(1, 1, 1, 1) } qr/^Too many arguments/,
         'Too many arguments';
+};
+
+subtest 'ohmd_list_open_device' => sub {
+    throws_ok { ohmd_list_open_device() } qr/^Too few arguments/,
+        'Too few arguments';
+    throws_ok { ohmd_list_open_device(1, 1, 1) } qr/^Too many arguments/,
+        'Too many arguments';
+
+    $DEVICE = ohmd_list_open_device($CONTEXT, 0);
+    cmp_ok $DEVICE, '>', 0, 'Valid device handle';
+};
+
+subtest 'ohmd_close_device' => sub {
+    throws_ok { ohmd_close_device() } qr/^Too few arguments/,
+        'Too few arguments';
+    throws_ok { ohmd_close_device(1, 1) } qr/^Too many arguments/,
+        'Too many arguments';
+
+    my $status = ohmd_close_device($DEVICE);
+    is $status, $OHMD_S_OK, 'Closed device';
 };
 
 subtest 'ohmd_ctx_destroy' => sub {

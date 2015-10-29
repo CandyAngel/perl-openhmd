@@ -33,11 +33,13 @@ our %EXPORT_TAGS = (
         $OHMD_VENDOR
     )],
     functions => [qw(
+        ohmd_close_device
         ohmd_ctx_create
         ohmd_ctx_destroy
         ohmd_ctx_get_error
         ohmd_ctx_probe
         ohmd_list_gets
+        ohmd_list_open_device
     )],
 );
 
@@ -50,6 +52,13 @@ do {
 };
 
 Exporter::export_ok_tags('all');
+
+sub ohmd_close_device {
+    croak 'Too few arguments'  if scalar @_ < 1;
+    croak 'Too many arguments' if scalar @_ > 1;
+
+    return _inline_ohmd_close_device(@_);
+}
 
 sub ohmd_ctx_create {
     croak 'Too many arguments' if scalar @_ > 0;
@@ -85,6 +94,13 @@ sub ohmd_list_gets {
     return _inline_ohmd_list_gets(@_);
 }
 
+sub ohmd_list_open_device {
+    croak 'Too few arguments'  if scalar @_ < 2;
+    croak 'Too many arguments' if scalar @_ > 2;
+
+    return _inline_ohmd_list_open_device(@_);
+}
+
 1;
 
 __DATA__
@@ -92,6 +108,10 @@ __DATA__
 __C__
 
 #include <openhmd/openhmd.h>
+
+int _inline_ohmd_close_device(int device) {
+    return ohmd_close_device(device);
+}
 
 int _inline_ohmd_ctx_create() {
     return ohmd_ctx_create();
@@ -111,4 +131,8 @@ int _inline_ohmd_ctx_probe(int ctx) {
 
 char * _inline_ohmd_list_gets(int ctx, int index, int type) {
     return ohmd_list_gets(ctx, index, type);
+}
+
+int _inline_ohmd_list_open_device(int ctx, int index) {
+    return ohmd_list_open_device(ctx, index);
 }

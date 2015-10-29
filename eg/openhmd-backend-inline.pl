@@ -27,4 +27,12 @@ foreach my $index (0 .. $count - 1) {
     print "\n";
 }
 
+my $device = ohmd_list_open_device($context, 0);
+die sprintf 'Failed to open device: %s', ohmd_ctx_get_error($context)
+    if !$device;
+
+my $status = ohmd_close_device($device);
+die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
+    if $status != $OHMD_S_OK;
+
 ohmd_ctx_destroy($context);

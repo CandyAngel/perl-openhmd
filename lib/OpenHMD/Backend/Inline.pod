@@ -30,6 +30,14 @@ This synopsis is available as eg/openhmd-backend-inline.pl
         print "\n";
     }
 
+    my $device = ohmd_list_open_device($context, 0);
+    die sprintf 'Failed to open device: %s', ohmd_ctx_get_error($context)
+        if !$device;
+
+    my $status = ohmd_close_device($device);
+    die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
+        if $status != $OHMD_S_OK;
+
     ohmd_ctx_destroy($context);
 
 =head1 DESCRIPTION
@@ -41,6 +49,12 @@ Inline::C.
 
 OpenHMD::Backend::Inline implements the following functions, which can be
 imported individually or using the C<:functions> tag.
+
+=head2 ohmd_close_device
+
+    my $status = ohmd_close_device($device);
+
+Closes a device.
 
 =head2 ohmd_ctx_create
 
@@ -74,6 +88,15 @@ Gets the string value of $type for device at $index.
 
     # Get vendor of device at index 1
     my $vendor = ohmd_list_gets($context, 1, $OHMD_VENDOR);
+
+=head2 ohmd_list_open_device
+
+    my $device = ohmd_list_open_device($context, $index);
+
+Opens the device at $index.
+
+    # Open the default device
+    my $device = ohmd_list_open_device($context, 0);
 
 =head1 CONSTANTS
 
