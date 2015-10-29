@@ -79,6 +79,13 @@ This synopsis is available as eg/openhmd-backend-inline.pl
     die sprintf 'Failed to set value: %s', ohmd_ctx_get_error($context)
         if $status != $OHMD_S_OK;
     $print_getf->('Set IPD', 1, $OHMD_EYE_IPD);
+    print "\n";
+
+    foreach my $tick (0 .. 10) {
+        ohmd_ctx_update($context);
+        $print_getf->('Rotation Quaternion', 4, $OHMD_ROTATION_QUAT);
+        select undef, undef, undef, 0.1;
+    }
 
     $status = ohmd_close_device($device);
     die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
@@ -125,6 +132,12 @@ Gets the latest human readable error message.
     my $device_count = ohmd_ctx_probe($context);
 
 Probes for supported devices and returns the count of found devices.
+
+=head2 ohmd_ctx_update
+
+    ohmd_ctx_update($context);
+
+Updates an OpenHMD context.
 
 =head2 ohmd_device_getf
 

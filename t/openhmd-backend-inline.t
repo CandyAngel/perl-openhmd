@@ -96,6 +96,13 @@ subtest 'ohmd_device_setf' => sub {
         'Too many arguments';
 };
 
+subtest 'ohmd_ctx_update' => sub {
+    throws_ok { ohmd_ctx_update() } qr/^Too few arguments/,
+        'Too few arguments';
+    throws_ok { ohmd_ctx_update(1, 1) } qr/^Too many arguments/,
+        'Too many arguments';
+};
+
 subtest 'ohmd_close_device' => sub {
     throws_ok { ohmd_close_device() } qr/^Too few arguments/,
         'Too few arguments';

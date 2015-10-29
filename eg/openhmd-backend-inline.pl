@@ -76,6 +76,13 @@ my $status = ohmd_device_setf($device, $OHMD_EYE_IPD, $buffer);
 die sprintf 'Failed to set value: %s', ohmd_ctx_get_error($context)
     if $status != $OHMD_S_OK;
 $print_getf->('Set IPD', 1, $OHMD_EYE_IPD);
+print "\n";
+
+foreach my $tick (0 .. 10) {
+    ohmd_ctx_update($context);
+    $print_getf->('Rotation Quaternion', 4, $OHMD_ROTATION_QUAT);
+    select undef, undef, undef, 0.1;
+}
 
 $status = ohmd_close_device($device);
 die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
