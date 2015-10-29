@@ -70,7 +70,14 @@ $print_getf->('Right Eye Aspect', 1, $OHMD_RIGHT_EYE_ASPECT_RATIO);
 $print_getf->('Distortion K',     6, $OHMD_DISTORTION_K);
 print "\n";
 
-my $status = ohmd_close_device($device);
+$print_getf->('Default IPD', 1, $OHMD_EYE_IPD);
+my $buffer = pack 'f', 0.55;
+my $status = ohmd_device_setf($device, $OHMD_EYE_IPD, $buffer);
+die sprintf 'Failed to set value: %s', ohmd_ctx_get_error($context)
+    if $status != $OHMD_S_OK;
+$print_getf->('Set IPD', 1, $OHMD_EYE_IPD);
+
+$status = ohmd_close_device($device);
 die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
     if $status != $OHMD_S_OK;
 

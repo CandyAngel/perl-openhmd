@@ -73,7 +73,14 @@ This synopsis is available as eg/openhmd-backend-inline.pl
     $print_getf->('Distortion K',     6, $OHMD_DISTORTION_K);
     print "\n";
 
-    my $status = ohmd_close_device($device);
+    $print_getf->('Default IPD', 1, $OHMD_EYE_IPD);
+    my $buffer = pack 'f', 0.55;
+    my $status = ohmd_device_setf($device, $OHMD_EYE_IPD, $buffer);
+    die sprintf 'Failed to set value: %s', ohmd_ctx_get_error($context)
+        if $status != $OHMD_S_OK;
+    $print_getf->('Set IPD', 1, $OHMD_EYE_IPD);
+
+    $status = ohmd_close_device($device);
     die sprintf 'Failed to close device: %s', ohmd_ctx_get_error($context)
         if $status != $OHMD_S_OK;
 
@@ -144,6 +151,16 @@ Populate $out with the integer values for $type as a packed string.
         $out,
     );
     my $horizontal = unpack 'i*', $out;
+
+=head2 ohmd_device_setf
+
+    my $status = ohmd_device_setf($device, $type, $in);
+
+Sets float values for $type.
+
+    # Set the IPD to 0.6
+    my $in = pack 'f1', 0.6;
+    my $status = ohmd_device_getf($device, $OHMD_EYE_IPD, $in);
 
 =head2 ohmd_list_gets
 

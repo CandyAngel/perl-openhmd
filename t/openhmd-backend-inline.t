@@ -19,6 +19,7 @@ subtest 'functions' => sub {
         ohmd_ctx_probe
         ohmd_device_getf
         ohmd_device_geti
+        ohmd_device_setf
         ohmd_list_gets
         ohmd_list_open_device
     );
@@ -85,6 +86,13 @@ subtest 'ohmd_device_geti' => sub {
     throws_ok { ohmd_device_geti() } qr/^Too few arguments/,
         'Too few arguments';
     throws_ok { ohmd_device_geti(1, 1, 1, 1) } qr/^Too many arguments/,
+        'Too many arguments';
+};
+
+subtest 'ohmd_device_setf' => sub {
+    throws_ok { ohmd_device_setf() } qr/^Too few arguments/,
+        'Too few arguments';
+    throws_ok { ohmd_device_setf(1, 1, 1, 1) } qr/^Too many arguments/,
         'Too many arguments';
 };
 

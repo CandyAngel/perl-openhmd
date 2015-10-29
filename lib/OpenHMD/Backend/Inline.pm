@@ -82,6 +82,7 @@ our %EXPORT_TAGS = (
         ohmd_ctx_probe
         ohmd_device_getf
         ohmd_device_geti
+        ohmd_device_setf
         ohmd_list_gets
         ohmd_list_open_device
     )],
@@ -145,6 +146,13 @@ sub ohmd_device_geti {
     return _inline_ohmd_device_geti(@_);
 }
 
+sub ohmd_device_setf {
+    croak 'Too few arguments'  if scalar @_ < 3;
+    croak 'Too many arguments' if scalar @_ > 3;
+
+    return _inline_ohmd_device_setf(@_);
+}
+
 sub ohmd_list_gets {
     croak 'Too few arguments'  if scalar @_ < 3;
     croak 'Too many arguments' if scalar @_ > 3;
@@ -193,6 +201,10 @@ int _inline_ohmd_device_getf(int device, int type, char* out) {
 
 int _inline_ohmd_device_geti(int device, int type, char* out) {
     return ohmd_device_geti(device, type, out);
+}
+
+int _inline_ohmd_device_setf(int device, int type, char* in) {
+    return ohmd_device_setf(device, type, in);
 }
 
 char * _inline_ohmd_list_gets(int ctx, int index, int type) {
